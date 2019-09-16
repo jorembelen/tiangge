@@ -26,7 +26,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.categories.add_category');
+        $levels = Category::where(['parent_id' => 0])->get();
+        return view('admin.categories.add_category', compact('levels'));
     }
 
     /**
@@ -41,6 +42,7 @@ class CategoryController extends Controller
 
         $category = new Category;
         $category->name = $data['category_name'];
+        $category->parent_id = $data['parent_id'];
         $category->description = $data['description'];
         $category->url = $data['url'];
         $category->save();
@@ -60,47 +62,30 @@ class CategoryController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+
+    public function editCategory(Request $request, $id)
     {
+        if($request->isMethod('post')) {
+            $data = $request->all();
+            // dd($data);
+            Category::where(['id' => $id])->update([
+                'name' => $data['category_name'],
+                'parent_id' => $data['parent_id'],
+                'description' => $data['description'],
+                'url' => $data['url']
+            ]);
+            return redirect(route('categories.view'))->with('flash_message_success', 'Category updated successfully.');
+        }
+        $levels = Category::where(['parent_id' => 0])->get();
         $categoryDetails = Category::where(['id'=> $id])->first();
 
-        return view('admin.categories.edit_category', compact('categoryDetails'));
+        return view('admin.categories.edit_category', compact('categoryDetails', 'levels'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $data = $request->all();
 
-        Category::where(['id' => $id])->update([
-            'name' => $data['category_name'],
-            'description' => $data['description'],
-            'url' => $data['url']
-        ]);
-
-        return redirect(route('categories.view'))->with('flash_message_success', 'Category updated successfully.');
+    public function deleteCategory($id = null){
+        Category::where(['id'=>$id])->delete();
+        return redirect()->back()->with('flash_message_success', 'Category has been deleted successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

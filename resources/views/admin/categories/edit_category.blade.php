@@ -16,7 +16,7 @@
                   <h5>Edit Category</h5>
                 </div>
                 <div class="widget-content nopadding">
-                <form class="form-horizontal" method="PATCH" action="{{ route('categories.update', $categoryDetails->id) }}" name="edit_category" id="edit_category" novalidate="novalidate">
+                <form class="form-horizontal" method="POST" action="{{ url('admin/edit-category/'.$categoryDetails->id) }}" name="edit_category" id="edit_category" novalidate="novalidate">
                   @csrf  
                   <div class="control-group">
                       <label class="control-label">Category Name</label>
@@ -25,9 +25,26 @@
                       </div>
                     </div>
                     <div class="control-group">
+                            <label class="control-label">Category Level</label>
+                            <div class="controls">
+                              <select name="parent_id" style="width: 220px;">
+                                <option value="0">Main Category</option>
+                                @foreach ($levels as $val)
+                              <option value="{{ $val->id }}"
+                                @if($val->id == $categoryDetails->parent_id)
+                                selected
+                                @endif
+                                >
+                                {{ $val->name }}
+                            </option>
+                                @endforeach
+                              </select>
+                            </div>
+                          </div>
+                    <div class="control-group">
                       <label class="control-label">Description</label>
                       <div class="controls">
-                        <textarea name="description" id="description" cols="5" rows="5">{{ $categoryDetails->name }}</textarea>
+                        <textarea name="description" id="description" cols="5" rows="5">{{ $categoryDetails->description }}</textarea>
                       </div>
                     </div>
                     <div class="control-group">

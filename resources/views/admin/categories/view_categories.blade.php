@@ -24,6 +24,7 @@
                   <tr>
                     <th>Category ID</th>
                     <th>Category Name</th>
+                    <th>Category Level</th>
                     <th>Category URL</th>
                     <th>Action</th>
                   </tr>
@@ -33,11 +34,13 @@
                     <tr class="gradeU">
                         <td>{{ $category->id }}</td>
                         <td>{{ $category->name }}</td>
+                        <td>{{ $category->parent_id }}</td>
                         <td>{{ $category->url }}</td>
                         <td class="center">
-                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-primary btn-mini">Edit</a>
-                            <a href="#" class="btn btn-danger btn-mini">Delete</a>
-                        </td>
+                        <a href="{{ url('/admin/edit-category/'.$category->id) }}" class="btn btn-primary btn-mini">Edit</a>
+                        {{-- <a href="{{ url('/admin/delete-category/'.$category->id) }}" id="delCat" class="btn btn-danger btn-mini">Delete</a> --}}
+                        <a id="delCategory" rel="{{ $category->id }}" rel1="delete-category" href="javascript:"  class="btn btn-danger btn-mini deleteRec">Delete</a>
+                      </td>
                     </tr>
                     @endforeach
                  
