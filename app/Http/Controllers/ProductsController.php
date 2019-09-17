@@ -287,11 +287,10 @@ class ProductsController extends Controller
         if($categoryDetails->parent_id == 0) {
         // If url is main category
             $subCategories = Category::where(['parent_id' => $categoryDetails->id])->get();
-            $cat_ids = "";
             foreach($subCategories as $subcat){
-                $cat_ids .= $subcat->id.",";
+                $cat_ids[] = $subcat->id;
             }
-            $productsAll = Product::whereIn('category_id',array($cat_ids))->get();
+            $productsAll = Product::whereIn('category_id', $cat_ids)->get();
         }else{
             // If url is sub-category
             $productsAll = Product::where(['category_id' => $categoryDetails->id])->get();
